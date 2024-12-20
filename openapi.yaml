@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  title: Branded Primitives Example API
+  version: 1.0.0
+  description: Demonstrates modeling of branded primitives in OpenAPI
+
+components:
+  schemas:
+    # Basic branded string types
+    UUID:
+      type: string
+      format: uuid
+      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+      example: '123e4567-e89b-12d3-a456-426614174000'
+      description: A v4 UUID
+
+    # Example using branded types in a model
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - createdAt
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid email format"
